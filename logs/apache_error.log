@@ -109,3 +109,4 @@
 [Wed Sep 25 19:53:01 2013] [error] [client 62.141.44.237] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.DFind:)
 [Thu Sep 26 03:34:12 2013] [error] [client 89.248.171.13] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)
 [Thu Sep 26 13:40:35 2013] [error] [client 89.248.171.13] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)
+[Thu Sep 26 23:39:04 2013] [error] [client 89.248.171.13] client sent HTTP/1.1 request without hostname (see RFC2616 section 14.23): /w00tw00t.at.ISC.SANS.Win32:)

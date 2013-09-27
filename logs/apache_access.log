@@ -59,3 +59,4 @@
 128.239.50.100 - - [26/Sep/2013:20:33:55 +0000] "GET /favicon.ico HTTP/1.1" 200 1166 "-" "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36"
 128.239.50.100 - - [26/Sep/2013:20:33:57 +0000] "GET /admin/ HTTP/1.1" 200 1166 "-" "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36"
 128.239.50.100 - - [26/Sep/2013:20:33:57 +0000] "GET /favicon.ico HTTP/1.1" 200 1166 "-" "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36"
+89.248.171.13 - - [26/Sep/2013:23:39:04 +0000] "GET /w00tw00t.at.ISC.SANS.Win32:) HTTP/1.1" 400 503 "-" "-"
