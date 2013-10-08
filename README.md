@@ -1,3 +1,3 @@
 Repository for Mobile App development
 
-by Alan, Ryan, and Sami
+by Ryan, Alan, and Sami
