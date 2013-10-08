@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'eeg.views.home', name='home'),
     # url(r'^eeg/', include('eeg.foo.urls')),
-    url(r'^wolves/', include('wolves.urls')), # For Alan's wolves project
+    # url(r'^wolves/', include('wolves.urls')), # For Alan's wolves project
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
