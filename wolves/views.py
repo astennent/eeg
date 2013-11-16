@@ -60,6 +60,28 @@ def delete_account(request):
     user.delete()
     return respond("success")
 
+
+@csrf_exempt
+def get_user_data(request):
+    user = validate_mobile(request)
+
+    players = Player.objects.filter(user=user).order_by(game__start_date).values(
+        "game__id", 
+        "game__name",
+        "in_progress",
+        "is_wolf", 
+        "is_dead",
+    )
+
+    badges = UserBadge.objects.filter(user=user).values("tag")
+
+    response_data = {
+        "players" : players,
+        "badges" : badges,
+    }
+
+
+
 @csrf_exempt
 # TODO: Honor settings in request
 def create_game(request):

@@ -5,6 +5,7 @@ from django.utils import timezone
 import math #for distance calculations
 
 class Badge(models.Model):
+    tag = models.PositiveIntegerField(unique=True) # used as a more controllable ID.
     name = models.CharField(max_length=63)
     description = models.CharField(max_length=127)
     points = models.IntegerField()
@@ -21,6 +22,7 @@ class Game(models.Model):
     administrator = models.ForeignKey(User, related_name="game_admin", null=True)    
     kill_range = models.FloatField(default=5.0) #TODO: Lookup how big gps coords are
     scent_range = models.FloatField(default=10.0)
+    public = models.BooleanField(default=True)
  
     def __unicode__(self):
         if self.name:
@@ -105,6 +107,17 @@ class Player(models.Model):
         kill = Kill(killer=self, victim=other, latitude=other.latitude, longitude=other.longitude)
         kill.save()
         return kill
+
+
+class UserBadge(models.Model):
+    user = models.ForeignKey(Player)
+    badge = models.ForeignKey(Badge)
+    earned = models.DateField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'badge')
+
+
 
 class Kill(models.Model):
     killer = models.ForeignKey(Player, related_name="kill-killer")
