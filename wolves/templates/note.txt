@@ -1,0 +1,1 @@
+This directory ought to be stored in the templates directory above the app root, according to Django's standards. However, since the git root of this project is at the app level (since it's sharing a computer with another Django app for class) I decided to put it in here and reference the templates directly.
