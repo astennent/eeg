@@ -17,11 +17,11 @@ def ping(request):
 
 # Called whenever a mobile request is sent which requires authentication
 def validate_mobile(request):
-  try:
-      username, password = base64.b64decode(request.POST['HTTP_AUTHORIZATION']).split(":")
-  except:
-      return None
-  return authenticate(username=username, password=password)
+    try:
+        username, password = base64.b64decode(request.POST['HTTP_AUTHORIZATION']).split(":")
+    except:
+        return None
+    return authenticate(username=username, password=password)
 
 def validate_game(request):
     try:
@@ -62,10 +62,11 @@ def delete_account(request):
 
 
 @csrf_exempt
-def get_user_data(request):
+def get_account_data(request):
     user = validate_mobile(request)
 
-    players = Player.objects.filter(user=user).order_by(game__start_date).values(
+    account = account.objects.get(user = user)
+    players = Player.objects.filter(account=account).order_by(game__start_date).values(
         "game__id", 
         "game__name",
         "in_progress",
@@ -73,13 +74,15 @@ def get_user_data(request):
         "is_dead",
     )
 
-    badges = UserBadge.objects.filter(user=user).values("tag")
-
+    badges = Badge.objects.all().values("tag", "name", "description",)
+    player_badges = account.badges.values("tag",)
+    
     response_data = {
         "players" : players,
         "badges" : badges,
     }
 
+    return respond(response_data)
 
 
 @csrf_exempt
@@ -98,6 +101,7 @@ def create_game(request):
         "player_id":player.id,
     }
     return respond(response_data)
+
 
 @csrf_exempt
 def join_game(request):
@@ -136,6 +140,7 @@ def restart_game(request):
 
     game.restart()
     return respond("success")
+
 
 @csrf_exempt
 def post_position(request):

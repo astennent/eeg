@@ -11,7 +11,7 @@ class Badge(models.Model):
     points = models.IntegerField()
 
     def __unicode__(self):
-        return str(self.user)
+        return str(self.name)
 
 
 class Game(models.Model):
@@ -76,6 +76,7 @@ class Account(models.Model):
     user = models.ForeignKey(User, related_name='+') #use the django admin user
     badges = models.ManyToManyField(Badge, blank=True)
     experience = models.PositiveIntegerField(default=0)
+    
     def __unicode__(self):
         return str(self.user)
 
@@ -107,17 +108,6 @@ class Player(models.Model):
         kill = Kill(killer=self, victim=other, latitude=other.latitude, longitude=other.longitude)
         kill.save()
         return kill
-
-
-class UserBadge(models.Model):
-    user = models.ForeignKey(Player)
-    badge = models.ForeignKey(Badge)
-    earned = models.DateField(auto_now_add=True)
-
-    class Meta:
-        unique_together = ('user', 'badge')
-
-
 
 class Kill(models.Model):
     killer = models.ForeignKey(Player, related_name="kill-killer")

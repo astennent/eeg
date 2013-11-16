@@ -12,6 +12,6 @@ urlpatterns = patterns('wolves.views',
     url(r'^place_vote$', 'place_vote'),
     url(r'^get_highscores$', 'get_highscores'),
     url(r'^kill$', 'kill'),
-    url(r'get_killable_players', 'get_killable_players'),
-    url(r'get_user_data', 'get_user_data'),
+    url(r'^get_killable_players$', 'get_killable_players'),
+    url(r'^get_account_data$', 'get_user_data'),
 )
