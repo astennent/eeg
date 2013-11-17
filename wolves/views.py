@@ -75,7 +75,7 @@ def get_account_data(request):
     )
 
     account_information = {
-        "experience" : account.
+        "experience" : account.experience,
     }
 
     response_data = {
