@@ -142,6 +142,13 @@ r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/dele
 payload = { 'HTTP_AUTHORIZATION' : userpass2, }
 r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/delete_account', data=payload)
 
-
+# Test get_user-info
+username = "astennent"
+password = "password"
+userpass2 = base64.encodestring('%s:%s' % (username, password))
+print userpass2
+payload['HTTP_AUTHORIZATION'] = userpass2
+r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/get_account_data', data=payload)
+print r.text
 
 print("All tests passed!")

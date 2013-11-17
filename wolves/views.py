@@ -65,21 +65,24 @@ def delete_account(request):
 def get_account_data(request):
     user = validate_mobile(request)
 
-    account = account.objects.get(user = user)
-    players = Player.objects.filter(account=account).order_by(game__start_date).values(
+    account = Account.objects.get(user = user)
+    players = Player.objects.filter(account=account).order_by("game__start_time").values(
         "game__id", 
         "game__name",
-        "in_progress",
+        "game__in_progress",
         "is_wolf", 
         "is_dead",
     )
 
-    badges = Badge.objects.all().values("tag", "name", "description",)
-    player_badges = account.badges.values("tag",)
-    
+    account_information = {
+        "experience" : account.
+    }
+
     response_data = {
-        "players" : players,
-        "badges" : badges,
+        "players" : list(players),
+        "badges" : list(badges),
+        "experience" : account.experience,
+        "kills" : Kill.objects.filter(killer__account = account).count()
     }
 
     return respond(response_data)
@@ -92,9 +95,10 @@ def create_game(request):
     if user == None:
         return respond("Error: Invalid Login Credentials")
 
-    game = Game(administrator=user)
+    account = Account.objects.get(user=user)
+    game = Game(administrator=account)
     game.save()
-    player = game.add_player(Account.objects.get(user=user)) 
+    player = game.add_player(account) 
     response_data = {
         "message":"success",
         "game_id":game.id,
@@ -130,12 +134,14 @@ def restart_game(request):
     if user == None:
         return respond("Error: Invalid Login Credentials")
 
+    account = Account.objects.get(user=user)
+
     try:
         game = Game.objects.get(id=request.POST['game_id'])
     except:
         return respond("Error: Game does not exist")
 
-    if game.administrator != user:
+    if game.administrator != account:
         return respond("Error: You are not the administrator")
 
     game.restart()
