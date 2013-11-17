@@ -14,6 +14,15 @@ class Badge(models.Model):
         return str(self.name)
 
 
+class Account(models.Model):
+    user = models.ForeignKey(User, related_name='+') #use the django admin user
+    badges = models.ManyToManyField(Badge, blank=True)
+    experience = models.PositiveIntegerField(default=0)
+
+    def __unicode__(self):
+        return str(self.user)
+
+
 class Game(models.Model):
     start_time = models.DateTimeField(auto_now_add=True) #use current time.
     cycle_length = models.IntegerField(default=720) #12 hours
@@ -71,14 +80,6 @@ class Game(models.Model):
         num_cycles = datetime_diff / self.cycle_length
         return (num_cycles % 2 == 0)
 
-
-class Account(models.Model):
-    user = models.ForeignKey(User, related_name='+') #use the django admin user
-    badges = models.ManyToManyField(Badge, blank=True)
-    experience = models.PositiveIntegerField(default=0)
-
-    def __unicode__(self):
-        return str(self.user)
 
 class Player(models.Model):
     account = models.ForeignKey(Account)
