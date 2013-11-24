@@ -70,7 +70,7 @@ def get_account_data(request):
 
     account = Account.objects.get(user = user)
     players = Player.objects.filter(account=account).order_by("game__start_time").values(
-        "game__id", 
+        "game__id",
         "game__name",
         "game__in_progress",
         "is_wolf", 
@@ -78,9 +78,6 @@ def get_account_data(request):
     )
 
     badges = account.badges.values("tag",)
-    account_information = {
-        "experience" : account.experience,
-    }
 
     response_data = {
         "players" : list(players),

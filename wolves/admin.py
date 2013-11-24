@@ -2,7 +2,7 @@ from django.contrib import admin
 from wolves.models import *
 
 class BadgeAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'description', 'points',)
+    list_display = ('tag', 'name', 'description', 'points',)
 
 class GameAdmin(admin.ModelAdmin):
     list_display = ('id', 'start_time', 'cycle_length', 'in_progress', 'is_day')

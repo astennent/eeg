@@ -9,7 +9,7 @@ password = "password"
 payload= { 'HTTP_AUTHORIZATION' : base64.encodestring('%s:%s' % (username, password)), }
 r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/ping', data=payload)
 print r.text
-assert(r.json()['message'] == "Error: Invalid Login Credentials")
+assert(r.json()['message'] == "Invalid Login Credentials")
 
 # Ping the server with a valid username and password
 username = "astennent"
@@ -44,7 +44,7 @@ payload['game_id'] = game_id
 # Attempt to re-join the game you just created.
 r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/join_game', data=payload)
 print r.text
-assert(r.json()['message'] == "Error: You've already joined that game")
+assert(r.json()['message'] == "You've already joined that game")
 
 
 # Create another user and join the game.
@@ -69,7 +69,7 @@ player_id2 = r.json()['player_id']
 # Attempt to restart the game without being the administrator
 r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/restart_game', data=payload)
 print r.text
-assert(r.json()['message'] == "Error: You are not the administrator")
+assert(r.json()['message'] == "You are not the administrator")
 
 
 # Switch to the administrator, restart the game.
@@ -104,7 +104,7 @@ assert(r.json()['message'] == "success")
 payload['victim_id'] = player_id2
 r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/kill', data=payload)
 print r.text
-assert(r.json()['message'] == "Error: Victim out of range")
+assert(r.json()['message'] == "Victim out of range")
 
 
 # Move the first player closer to player 2 and kill him
@@ -120,7 +120,7 @@ assert(r.json()['message'] == "success")
 # Have player 1 attempt to kill the now dead player 2
 r = requests.post(r'http://ec2-54-235-36-112.compute-1.amazonaws.com/wolves/kill', data=payload)
 print r.text
-assert(r.json()['message'] == "Error: Invalid target")
+assert(r.json()['message'] == "Invalid target")
 
 
 # Restart the game and have player 1 kill player 2 again.
