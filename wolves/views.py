@@ -88,6 +88,26 @@ def get_account_data(request):
 
     return respond(response_data)
 
+@csrf_exempt
+def get_games_data(request):
+    user = validate_mobile(request)
+
+    account = Account.objects.get(user = user)
+    
+    players = Player.objects.filter(account=account).order_by("game__start_time").values(
+        "game__id",
+        "game__name",
+        "game__in_progress",
+        "is_wolf", 
+        "is_dead",
+    )
+
+    response_data = {
+        "players" : list(players),
+    }
+
+    return respond(response_data)
+
 
 @csrf_exempt
 # TODO: Honor settings in request
