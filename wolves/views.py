@@ -93,7 +93,7 @@ def get_games_data(request):
     user = validate_mobile(request)
 
     account = Account.objects.get(user = user)
-    
+
     players = Player.objects.filter(account=account).order_by("game__start_time").values(
         "game__id",
         "game__name",
@@ -117,8 +117,16 @@ def create_game(request):
         return respond("Incorrect Username or Password")
 
     account = Account.objects.get(user=user)
-    game = Game(administrator=account)
+
+    name = request.POST['name'];
+    cycle_length = request.POST['cycle_length'];
+    scent_range = request.POST['scent_range'];
+    kill_range = request.POST['kill_range'];    
+
+    game = Game(administrator=account, name=name, 
+        cycle_length=cycle_length, scent_range=scent_range, kill_range=kill_range)
     game.save()
+
     player = game.add_player(account) 
     response_data = {
         "message":"success",

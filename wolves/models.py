@@ -29,8 +29,8 @@ class Game(models.Model):
     in_progress = models.BooleanField(default=True)
     name = models.CharField(max_length=31, null=True, blank=True)
     administrator = models.ForeignKey(Account, related_name="game_admin", null=True)    
-    kill_range = models.FloatField(default=5.0) #TODO: Lookup how big gps coords are
-    scent_range = models.FloatField(default=10.0)
+    kill_range = models.FloatField(default=0.5) #TODO: Lookup how big gps coords are
+    scent_range = models.FloatField(default=1.0)
     public = models.BooleanField(default=True)
  
     def __unicode__(self):

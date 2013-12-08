@@ -11,7 +11,7 @@ class GameAdmin(admin.ModelAdmin):
         return obj.is_day()
 
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ('id', 'game', 'is_dead', 'is_wolf')
+    list_display = ('id', 'game', 'account', 'is_dead', 'is_wolf')
 
 class AccountAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'experience')
