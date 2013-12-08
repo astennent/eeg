@@ -5,7 +5,7 @@ class BadgeAdmin(admin.ModelAdmin):
     list_display = ('tag', 'name', 'description', 'points',)
 
 class GameAdmin(admin.ModelAdmin):
-    list_display = ('id', 'start_time', 'cycle_length', 'in_progress', 'is_day')
+    list_display = ('id', 'name', 'start_time', 'cycle_length', 'in_progress', 'is_day')
     
     def is_day(self, obj):
         return obj.is_day()

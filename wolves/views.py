@@ -67,20 +67,10 @@ def delete_account(request):
 @csrf_exempt
 def get_account_data(request):
     user = validate_mobile(request)
-
     account = Account.objects.get(user = user)
-    players = Player.objects.filter(account=account).order_by("game__start_time").values(
-        "game__id",
-        "game__name",
-        "game__in_progress",
-        "is_wolf", 
-        "is_dead",
-    )
-
     badges = account.badges.values("tag",)
 
     response_data = {
-        "players" : list(players),
         "badges" : list(badges),
         "experience" : account.experience,
         "kills" : Kill.objects.filter(killer__account = account).count()
@@ -94,7 +84,7 @@ def get_games_data(request):
 
     account = Account.objects.get(user = user)
 
-    players = Player.objects.filter(account=account).order_by("game__start_time").values(
+    players = Player.objects.filter(account=account).order_by("-game__start_time").values(
         "game__id",
         "game__name",
         "game__in_progress",
