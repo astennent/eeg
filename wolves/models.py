@@ -117,7 +117,7 @@ class Player(models.Model):
         return distance <= self.game.scent_range
      
     def distance_to(self, other):
-        distance = math.sqrt( (self.latitude-other.latitude)**2 + (self.longitude-other.longitude)**2 )
+        distance = math.sqrt( float((self.latitude-other.latitude))**2 + float((self.longitude-other.longitude))**2 )
         return distance
 
     def kill(self, other):
