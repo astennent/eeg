@@ -331,14 +331,11 @@ def smell(request):
 
     try:
         victim = Player.objects.get(id=request.POST['victim_id'])
-        assert(victim.game.id == killer.game.id)
         assert(victim.is_wolf == False)
         assert(victim.is_dead == False)
         assert(killer.is_wolf)
     except:
-        return respond("Invalid target")
-
-    
+        return respond("Invalid target") 
 
     response_data = {
         "smell_distance" : smeller.distance_to(victim),
@@ -365,7 +362,6 @@ def kill(request):
     
     try:
         victim = Player.objects.get(id=request.POST['victim_id'])
-        assert(victim.game.id == killer.game.id)
         assert(victim.is_wolf == False)
         assert(victim.is_dead == False)
         assert(killer.is_wolf)
