@@ -139,11 +139,12 @@ def get_game_data(request):
 
         actions["your_vote"] = your_vote
         actions["voted"] = voted
-        actions["all_players"] = game.get_all_players(player)
 
     elif player.is_wolf:
         actions["killable_players"] = game.get_killable_players(player)
         actions["smellable_players"] = game.get_smellable_players(player)
+    
+    actions["all_players"] = game.get_all_players(player)
 
     response_data = {
         "is_day" : is_day,
@@ -281,7 +282,7 @@ def place_vote(request):
 
     voter.vote = votee
     voter.save()
-    return respond("success", "place_vote")
+    return respond_with_method("success", "place_vote")
 
 
 @csrf_exempt

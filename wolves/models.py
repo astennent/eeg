@@ -63,7 +63,7 @@ class Game(models.Model):
         return all_players 
     
     def get_killable_players(self, asker):
-        players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id)
+        players_in_game = Player.objects.filter(game=self, is_dead=False, is_wolf=False).exclude(id=asker.id)
         players_in_range = []
         for player in players_in_game:
              if asker.in_kill_range(player):
@@ -71,7 +71,7 @@ class Game(models.Model):
         return players_in_range
 
     def get_smellable_players(self, asker):
-        players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id)
+        players_in_game = Player.objects.filter(game=self, is_dead=False, is_wolf=False).exclude(id=asker.id)
         players_in_range = []
         for player in players_in_game:
              if asker.in_scent_range(player):
