@@ -32,10 +32,10 @@ def validate_game(request):
     
 
 def respond(response_data):
-    return respond(response_data, None)
+    return respond_with_method(response_data, "X")
 
 # Helper method for returning json responses
-def respond(response_data, response_method):
+def respond_with_method(response_data, response_method):
     if isinstance(response_data, str):
         data = {"message":response_data, "method":response_method,}
     else:
@@ -155,7 +155,7 @@ def get_game_data(request):
         "player_is_wolf" : player.is_wolf,
     }
 
-    return respond(response_data, "get_game_data")
+    return respond_with_method(response_data, "get_game_data")
 
 
 @csrf_exempt
@@ -364,7 +364,7 @@ def kill(request):
         "kill": str(kill), #TODO: write serialization methods
         "message":"success",
     }
-    return respond(response_data, "kill")
+    return respond_with_method(response_data, "kill")
 
 
         
