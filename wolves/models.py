@@ -55,16 +55,19 @@ class Game(models.Model):
         self.start_time = datetime.now()
         self.save()
 
-    def get_votable_players(self, asker):
-        players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id).values_list('id', flat=True)
-        return players_in_game 
+    def get_all_players(self, asker):
+        players_in_game = Player.objects.filter(game=self).exclude(id=asker.id).values_list('id', flat=True)
+        all_players = []
+        for player in players_in_game:
+            all_players.append(player.dictify(asker.is_wolf))
+        return all_players 
     
     def get_killable_players(self, asker):
         players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id).values_list('id', flat=True)
         players_in_range = []
         for player in players_in_game:
              if asker.in_kill_range(player):
-                 players_in_range.append(player)
+                 players_in_range.append(player.dictify(asker.is_wolf))
         return players_in_range
 
     def get_smellable_players(self, asker):
@@ -72,13 +75,24 @@ class Game(models.Model):
         players_in_range = []
         for player in players_in_game:
              if asker.in_scent_range(player):
-                 players_in_range.append(player)
+                 players_in_range.append(player.dictify(asker.is_wolf))
         return players_in_range
 
     def is_day(self):
         datetime_diff = (timezone.now() - self.start_time).seconds / 60
         num_cycles = datetime_diff / self.cycle_length
         return (num_cycles % 2 == 0)
+
+    # Calculates the minutes until the day/night shift.
+    def minutes_remaining(self):
+        return (timezone.now() - self.start_time).seconds / 60
+
+
+    def count_living_wolves(self):
+        return Player.objects.filter(game=self, is_dead=False, is_wolf=True).count()
+
+    def count_living_villagers(self):
+        return Player.objects.filter(game=self, is_dead=False, is_wolf=False).count()
 
 
 class Player(models.Model):
@@ -109,6 +123,23 @@ class Player(models.Model):
         kill = Kill(killer=self, victim=other, latitude=other.latitude, longitude=other.longitude)
         kill.save()
         return kill
+
+    # Converts the player to something that can be seen by others. 
+    # Wolf perspective allows you to see if the player is a wolf.
+    def dictify(self, wolf_perspective):
+        if wolf_perspective:
+            if self.is_wolf:
+                wolf_identifier = 1
+            else:
+                wolf_identifier = 0
+        else:
+            wolf_identifier = -1
+        return {
+            "wolf_identifier" : wolf_identifier,
+            "name" : str(self.account),
+            "id" : self.id,
+        }
+
 
 class Kill(models.Model):
     killer = models.ForeignKey(Player, related_name="kill-killer")

@@ -15,4 +15,5 @@ urlpatterns = patterns('wolves.views',
     url(r'^get_killable_players$', 'get_killable_players'),
     url(r'^get_account_data$', 'get_account_data'),
     url(r'^get_games_data$', 'get_games_data'),
+    url(r'^get_game_data$', 'get_game_data'),
 )

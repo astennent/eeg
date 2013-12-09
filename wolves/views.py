@@ -23,6 +23,7 @@ def validate_mobile(request):
         return None
     return authenticate(username=username, password=password)
 
+
 def validate_game(request):
     try:
         return Game.objects.get(id=request.POST['game_id'])
@@ -81,6 +82,8 @@ def get_account_data(request):
 @csrf_exempt
 def get_games_data(request):
     user = validate_mobile(request)
+    if user == None:
+        return respond("Incorrect Username or Password")
 
     account = Account.objects.get(user = user)
 
@@ -88,12 +91,63 @@ def get_games_data(request):
         "game__id",
         "game__name",
         "game__in_progress",
-        "is_wolf", 
+        "is_wolf",
         "is_dead",
     )
 
     response_data = {
         "players" : list(players),
+    }
+
+    return respond(response_data)
+
+
+@csrf_exempt
+# Returns the game information for a single game. Expects a game_id paramter.
+def get_game_data(request):
+    user = validate_mobile(request)
+    if user == None:
+        return respond("Incorrect Username or Password")
+
+    game = validate_game(request)
+    if game == None:
+        return respond("Game does not exist")
+
+    account = Account.objects.get(user = user)
+    player = Player.objects.get(account__user=user, game=game)
+
+    is_day = game.is_day()
+    num_wolves = game.count_living_wolves()
+    num_villagers = game.count_living_villagers()
+    minutes_remaining = game.minutes_remaining()
+
+    # Get the list of votable players, and who you voted for
+    actions = {}
+    if is_day:
+        actions["has_actions"] = True
+        voted_player = player.vote
+        if voted_player:
+            your_vote = {
+                "id" : voted_player.id,
+                "name" : str(voted_player.account),
+            }
+        else:
+            your_vote = None
+
+        actions["your_vote"] = your_vote
+        actions["all_players"] = game.get_all_players(player)
+
+    elif player.is_wolf:
+        actions["has_actions"] = True
+        actions["killable_players"] = game.get_killable_players(player)
+        actions["smellable_players"] = game.get_smellable_players(player)
+
+    response_data = {
+        "is_day" : is_day,
+        "num_wolves" : num_wolves,
+        "num_villagers" : num_villagers,
+        "minutes_remaining" : minutes_remaining,
+        "actions" : actions,
     }
 
     return respond(response_data)
@@ -192,29 +246,6 @@ def post_position(request):
     player.save()
     return respond("success")
 
-
-@csrf_exempt
-def get_votable_players(request):
-    user = validate_mobile(request)
-    if user == None:
-        return respond("Incorrect Username or Password")
-     
-    try:
-        game = Game.objects.get(id=request.POST['game_id'])
-    except:
-        return respond("Game does not exist")
-     
-    try:
-        player = Player.objects.get(account__user=user, game=game)
-    except:
-        return respond("No player in game")
-    
-    votable_players = str(game.get_votable_players(player)) #Return a list
-
-    response_data = {
-        'votable_players':votable_players,
-    }
-    return respond(response_data)
 
 @csrf_exempt
 def place_vote(request):
