@@ -333,7 +333,7 @@ def smell(request):
         victim = Player.objects.get(id=request.POST['victim_id'])
         assert(victim.is_wolf == False)
         assert(victim.is_dead == False)
-        assert(smeller.is_wolf)
+        assert(smeller.is_wolf == True)
     except:
         return respond("Invalid target") 
 
@@ -364,7 +364,7 @@ def kill(request):
         victim = Player.objects.get(id=request.POST['victim_id'])
         assert(victim.is_wolf == False)
         assert(victim.is_dead == False)
-        assert(killer.is_wolf)
+        assert(killer.is_wolf == True)
     except:
         return respond("Invalid target")
 
