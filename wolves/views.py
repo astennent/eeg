@@ -341,8 +341,8 @@ def smell(request):
     
 
     response_data = {
-        "smell_distance" : smeller.distance_to(victim)
-        "in_smell_range" : smeller.in_scent_range(victim)
+        "smell_distance" : smeller.distance_to(victim),
+        "in_smell_range" : smeller.in_scent_range(victim),
     }
     return respond_with_method(response_data, "smell")
 

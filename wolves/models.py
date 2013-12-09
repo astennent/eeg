@@ -79,13 +79,14 @@ class Game(models.Model):
         return players_in_range
 
     def is_day(self):
-        datetime_diff = (timezone.now() - self.start_time).seconds / 60
+        minutes_passed = (timezone.now() - self.start_time).seconds / 60
         num_cycles = datetime_diff / self.cycle_length
         return (num_cycles % 2 == 0)
 
     # Calculates the minutes until the day/night shift.
     def minutes_remaining(self):
-        return (timezone.now() - self.start_time).seconds / 60
+        minutes_passed = (timezone.now() - self.start_time).seconds) / 60
+        minutes_remaining = minutes_passed % self.cycle_length
 
 
     def count_living_wolves(self):
