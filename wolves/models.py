@@ -108,13 +108,17 @@ class Player(models.Model):
         return str(self.account) + " (" + str(self.id) + ")"
 
     def in_kill_range(self, other):
-        distance = math.sqrt( (self.latitude-other.latitude)**2 + (self.longitude-other.longitude)**2 )
+        distance = self.distance_to(other)
         return distance <= self.game.kill_range
           
     def in_scent_range(self, other):
-        distance = math.sqrt( (self.latitude-other.latitude)**2 + (self.longitude-other.longitude)**2 )
+        distance = self.distance_to(other)
         return distance <= self.game.scent_range
      
+    def distance_to(self, other):
+        distance = math.sqrt( (self.latitude-other.latitude)**2 + (self.longitude-other.longitude)**2 )
+        return distance
+
     def kill(self, other):
         self.account.experience += 5
         self.account.save()

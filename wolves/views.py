@@ -312,24 +312,40 @@ def get_smellable_players(request):
     }
     return respond(response_data)
 
-#TODO: Write test cases for smellable and killable
- 
+
 @csrf_exempt
-def get_killable_players(request):
+def smell(request): 
     user = validate_mobile(request)
     if user == None:
         return respond("Incorrect Username or Password")
-     
+    
     try:
         game = Game.objects.get(id=request.POST['game_id'])
     except:
         return respond("Game does not exist")
-     
-    killable_players = str(game.get_killable_players(player)) #Return a list
+    
+    try:
+        smeller = Player.objects.get(account__user=user, game=game)
+    except:
+        return respond("No player in game")
+
+    try:
+        victim = Player.objects.get(id=request.POST['victim_id'])
+        assert(victim.game.id == killer.game.id)
+        assert(victim.is_wolf == False)
+        assert(victim.is_dead == False)
+        assert(killer.is_wolf)
+    except:
+        return respond("Invalid target")
+
+    
+
     response_data = {
-        'killable_players':killable_players,
+        "smell_distance" : smeller.distance_to(victim)
+        "in_smell_range" : smeller.in_scent_range(victim)
     }
     return respond(response_data)
+
 
 @csrf_exempt
 def kill(request): 
@@ -352,7 +368,7 @@ def kill(request):
         assert(victim.game.id == killer.game.id)
         assert(victim.is_wolf == False)
         assert(victim.is_dead == False)
-        #assert(killer.is_wolf) #Temporarily disabled for testing. 
+        assert(killer.is_wolf)
     except:
         return respond("Invalid target")
 
@@ -362,7 +378,7 @@ def kill(request):
         return respond("Victim out of range")
 
     response_data = {
-        "kill": str(kill), #TODO: write serialization methods
+        "kill": kill.dictify(), 
         "message":"success",
     }
     return respond_with_method(response_data, "kill")
