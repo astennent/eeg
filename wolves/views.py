@@ -344,7 +344,7 @@ def smell(request):
         "smell_distance" : smeller.distance_to(victim)
         "in_smell_range" : smeller.in_scent_range(victim)
     }
-    return respond(response_data)
+    return respond_with_method(response_data, "smell")
 
 
 @csrf_exempt
