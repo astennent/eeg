@@ -31,14 +31,19 @@ def validate_game(request):
         return None
     
 
-# Helper method for returning json responses
 def respond(response_data):
+    return respond(response_data, None)
+
+# Helper method for returning json responses
+def respond(response_data, response_method):
     if isinstance(response_data, str):
-        data = {"message":response_data}
+        data = {"message":response_data, "method":response_method,}
     else:
         data = response_data
         if "message" not in data:
-            data["message"] = "success" 
+            data["message"] = "success"
+        if "method" not in data:
+            data["method"] = response_method 
 
     json_dump = json.dumps(data)
     return HttpResponse(json_dump, content_type="application/json")
@@ -150,7 +155,7 @@ def get_game_data(request):
         "player_is_wolf" : player.is_wolf,
     }
 
-    return respond(response_data)
+    return respond(response_data, "get_game_data")
 
 
 @csrf_exempt
@@ -276,7 +281,7 @@ def place_vote(request):
 
     voter.vote = votee
     voter.save()
-    return respond("success")
+    return respond("success", "place_vote")
 
 
 @csrf_exempt
@@ -359,7 +364,7 @@ def kill(request):
         "kill": str(kill), #TODO: write serialization methods
         "message":"success",
     }
-    return respond(response_data)
+    return respond(response_data, "kill")
 
 
         
