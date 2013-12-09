@@ -124,21 +124,19 @@ def get_game_data(request):
     # Get the list of votable players, and who you voted for
     actions = {}
     if is_day:
-        actions["has_actions"] = True
         voted_player = player.vote
         if voted_player:
-            your_vote = {
-                "id" : voted_player.id,
-                "name" : str(voted_player.account),
-            }
+            voted = True
+            your_vote = str(voted_player.account)
         else:
+            voted = False
             your_vote = None
 
         actions["your_vote"] = your_vote
+        actions["voted"] = voted
         actions["all_players"] = game.get_all_players(player)
 
     elif player.is_wolf:
-        actions["has_actions"] = True
         actions["killable_players"] = game.get_killable_players(player)
         actions["smellable_players"] = game.get_smellable_players(player)
 
@@ -149,6 +147,7 @@ def get_game_data(request):
         "minutes_remaining" : minutes_remaining,
         "actions" : actions,
         "game_name" : game.name,
+        "player_is_wolf" : player.is_wolf,
     }
 
     return respond(response_data)
