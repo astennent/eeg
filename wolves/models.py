@@ -56,14 +56,14 @@ class Game(models.Model):
         self.save()
 
     def get_all_players(self, asker):
-        players_in_game = Player.objects.filter(game=self).exclude(id=asker.id).values_list('id', flat=True)
+        players_in_game = Player.objects.filter(game=self).exclude(id=asker.id)
         all_players = []
         for player in players_in_game:
             all_players.append(player.dictify(asker.is_wolf))
         return all_players 
     
     def get_killable_players(self, asker):
-        players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id).values_list('id', flat=True)
+        players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id)
         players_in_range = []
         for player in players_in_game:
              if asker.in_kill_range(player):
@@ -71,7 +71,7 @@ class Game(models.Model):
         return players_in_range
 
     def get_smellable_players(self, asker):
-        players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id).values_list('id', flat=True)
+        players_in_game = Player.objects.filter(game=self, is_dead=False).exclude(id=asker.id)
         players_in_range = []
         for player in players_in_game:
              if asker.in_scent_range(player):
@@ -138,6 +138,7 @@ class Player(models.Model):
             "wolf_identifier" : wolf_identifier,
             "name" : str(self.account),
             "id" : self.id,
+            "is_dead" : self.is_dead,
         }
 
 

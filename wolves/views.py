@@ -148,6 +148,7 @@ def get_game_data(request):
         "num_villagers" : num_villagers,
         "minutes_remaining" : minutes_remaining,
         "actions" : actions,
+        "game_name" : game.name,
     }
 
     return respond(response_data)
