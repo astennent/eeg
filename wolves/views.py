@@ -254,8 +254,12 @@ def post_position(request):
 # returns the tag
 def consume_pending_badge(pendingBadge):
     badge_tag = pendingBadge.badge.tag
-    #Todo: add to account badges.
+    
+    #Add to acquired badges.
+    pendingBadge.account.badges.add(pendingBadge.badge)
+
     pendingBadge.delete()
+    return badge_tag
 
 @csrf_exempt
 def place_vote(request):
