@@ -374,7 +374,7 @@ def kill(request):
         return respond("Victim out of range")
 
     response_data = {
-        "kill": kill.dictify(), 
+        "victim_name": victim.name, 
         "message":"success",
     }
     return respond_with_method(response_data, "kill")
