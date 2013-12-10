@@ -242,8 +242,20 @@ def post_position(request):
         return respond("Invalid position")
 
     account.save()
-    return respond("success")
 
+    results = {}
+
+    pending_badges = PendingBadge.objects.filter(account = account)
+    if len(pending_badges) > 0:
+        results["badge_id"] = consume_pending_badge(pending_badges[0])
+
+    return respond(results)
+
+# returns the tag
+def consume_pending_badge(pendingBadge):
+    badge_tag = pendingBadge.badge.tag
+    #Todo: add to account badges.
+    pendingBadge.delete()
 
 @csrf_exempt
 def place_vote(request):

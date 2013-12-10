@@ -153,3 +153,7 @@ class Kill(models.Model):
     latitude = models.FloatField() #these are victim's coordinates
     longitude = models.FloatField()
     time = models.DateField(auto_now_add=True)
+
+class PendingBadge(models.Model):
+    account = models.ForeignKey(Account)
+    badge = models.ForeignKey(Badge)
