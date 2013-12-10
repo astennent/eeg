@@ -91,10 +91,14 @@ class Game(models.Model):
         all_kills = Kill.objects.filter(killer__game=self)
         kills = []
         for kill in all_kills:
+            if kill.killer = None:
+                killer = None
+            else:
+                killer = str(kill.killer.account);
             kills.append({
-                "killer":str(kill.killer.account),
-                "victim":str(kill.victim.account),
-                "time":str(kill.time),
+                "killer" : killer,
+                "victim" : str(kill.victim.account),
+                "time" : str(kill.time),
                 })
         return kills
 
@@ -114,6 +118,10 @@ class Game(models.Model):
 
     def count_living_villagers(self):
         return Player.objects.filter(game=self, is_dead=False, is_wolf=False).count()
+
+    def check_game_over(self):
+        if self.count_living_villagers() == 0 || self.count_living_wolves == 0:
+            in_progress = False
 
 
 
@@ -146,6 +154,7 @@ class Player(models.Model):
         other.save()
         kill = Kill(killer=self, victim=other, latitude=other.account.latitude, longitude=other.account.longitude)
         kill.save()
+        self.game.check_game_over()
         return kill
 
     # Converts the player to something that can be seen by others. 
@@ -167,7 +176,7 @@ class Player(models.Model):
 
 
 class Kill(models.Model):
-    killer = models.ForeignKey(Player, related_name="kill-killer")
+    killer = models.ForeignKey(Player, related_name="kill-killer", null=True, blank=True)
     victim = models.ForeignKey(Player, related_name="kill-victim")
     latitude = models.FloatField() #these are victim's coordinates
     longitude = models.FloatField()

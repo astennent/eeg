@@ -154,6 +154,8 @@ def get_game_data(request):
         "actions" : actions,
         "game_name" : game.name,
         "player_is_wolf" : player.is_wolf,
+        "game_in_progress" : game.in_progress,
+        "wolves_win" : (num_wolves > num_villagers),
     }
 
     return respond_with_method(response_data, "get_game_data")
@@ -177,7 +179,7 @@ def create_game(request):
         cycle_length=cycle_length, scent_range=scent_range, kill_range=kill_range)
     game.save()
 
-    all_accounts = account.objects.all()
+    all_accounts = Account.objects.all()
     for m_account in all_accounts:
         game.add_player(m_account) 
     game.restart()
