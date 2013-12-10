@@ -48,10 +48,16 @@ class Game(models.Model):
 
     def restart(self):
         # Restore dead players and clear their current votes
-        players = Player.objects.filter(game = self)
+        players = Player.objects.filter(game = self).order_by('?')
+        wolf_count = len(players)/3
         for player in players:
             player.vote = None
             player.is_dead = False
+            if (wolf_count > 0):
+                wolf_count -= 1
+                player.is_wolf = True
+            else:
+                player.is_wolf = False
             player.save()
         self.in_progress = True
         self.start_time = datetime.now()

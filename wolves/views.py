@@ -177,7 +177,12 @@ def create_game(request):
         cycle_length=cycle_length, scent_range=scent_range, kill_range=kill_range)
     game.save()
 
-    player = game.add_player(account) 
+    all_accounts = account.objects.all()
+    for m_account in all_accounts:
+        game.add_player(m_account) 
+    game.restart()
+
+    player = Player.objects.get(game=game, account=account)
     response_data = {
         "message":"success",
         "game_id":game.id,
