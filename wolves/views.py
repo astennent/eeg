@@ -232,24 +232,16 @@ def post_position(request):
     user = validate_mobile(request)
     if user == None:
         return respond("Incorrect Username or Password")
-     
-    try:
-        game = Game.objects.get(id=request.POST['game_id'])
-    except:
-        return respond("Game does not exist")
-    
-    try:
-        player = Player.objects.get(account__user=user, game=game)
-    except:
-        return respond("No player in game")
+
+    account = Account.objects.get(user=user)
 
     try:
-        player.latitude = request.POST['latitude']
-        player.longitude = request.POST['longitude']
+        account.latitude = request.POST['latitude']
+        account.longitude = request.POST['longitude']
     except:
         return respond("Invalid position")
 
-    player.save()
+    account.save()
     return respond("success")
 
 

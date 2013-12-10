@@ -18,6 +18,8 @@ class Account(models.Model):
     user = models.ForeignKey(User, related_name='+') #use the django admin user
     badges = models.ManyToManyField(Badge, blank=True)
     experience = models.PositiveIntegerField(default=0)
+    latitude = models.FloatField(default=0.0)
+    longitude = models.FloatField(default=0.0)
 
     def __unicode__(self):
         return str(self.user)
@@ -101,8 +103,6 @@ class Player(models.Model):
     game = models.ForeignKey(Game)
     is_dead = models.BooleanField(default=False)
     is_wolf = models.BooleanField(default=False)
-    latitude = models.FloatField(default=0.0)
-    longitude = models.FloatField(default=0.0)
     vote = models.ForeignKey('self', null=True, blank=True) #reset to null at the start of the day cycle.
 
     def __unicode__(self):
@@ -117,7 +117,7 @@ class Player(models.Model):
         return distance <= self.game.scent_range
      
     def distance_to(self, other):
-        distance = math.sqrt( float((self.latitude-other.latitude))**2 + float((self.longitude-other.longitude))**2 )
+        distance = math.sqrt( float((self.account.latitude-other.account.latitude))**2 + float((self.account.longitude-other.account.longitude))**2 )
         return distance
 
     def kill(self, other):
@@ -125,7 +125,7 @@ class Player(models.Model):
         self.account.save()
         other.is_dead = True
         other.save()
-        kill = Kill(killer=self, victim=other, latitude=other.latitude, longitude=other.longitude)
+        kill = Kill(killer=self, victim=other, latitude=other.account.latitude, longitude=other.account.longitude)
         kill.save()
         return kill
 
