@@ -16,8 +16,11 @@ class PlayerAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'experience')
 
+class PendingBadgeAdmin(admin.ModelAdmin):
+	list_distplay = ('id', 'account', 'badge')
+
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Game, GameAdmin)
 admin.site.register(Badge, BadgeAdmin)
 admin.site.register(Account, AccountAdmin)
-
+admin.site.register(PendingBadge, PendingBadgeAdmin)
