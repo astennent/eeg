@@ -91,7 +91,7 @@ class Game(models.Model):
         all_kills = Kill.objects.filter(killer__game=self)
         kills = []
         for kill in all_kills:
-            if kill.killer = None:
+            if kill.killer == None:
                 killer = None
             else:
                 killer = str(kill.killer.account);
@@ -120,10 +120,32 @@ class Game(models.Model):
         return Player.objects.filter(game=self, is_dead=False, is_wolf=False).count()
 
     def check_game_over(self):
-        if self.count_living_villagers() == 0 || self.count_living_wolves == 0:
+        if self.count_living_villagers() == 0 or self.count_living_wolves == 0:
             in_progress = False
 
+    def toggle_cycle(self):
+        if is_day(self): # switch to day. 
+            pass #TODO: Anything?
+        else: # switch to night.
+            players = Player.objects.filter(game=self).order_by('?')
+            highest_vote_count = 0
+            highest_vote_player = players[0]
+            
+            for player in players:
+                vote_count = Player.objects.filter(vote=player).count()
+                if vote_count > highest_vote_count:
+                    highest_vote_count = vote_count
+                    highest_vote_player = player
 
+            # kill the highest voted player.
+            highest_vote_player.is_dead = True
+            highest_vote_player.save()
+
+            # record the kill for posterity.
+            hangman_kill = Kill(victim=highest_vote_player, 
+                latitude=highest_vote_player.account.latitude, 
+                longitude=highest_vote_player.account.longitude)
+            hangman_kill.save()
 
 class Player(models.Model):
     account = models.ForeignKey(Account)
