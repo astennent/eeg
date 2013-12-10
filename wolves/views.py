@@ -374,7 +374,7 @@ def kill(request):
         return respond("Victim out of range")
 
     response_data = {
-        "victim_name": victim.name, 
+        "victim_name": str(victim.account), 
         "message":"success",
     }
     return respond_with_method(response_data, "kill")
