@@ -82,7 +82,7 @@ class Game(models.Model):
 
 
     def get_all_kills(self):
-        all_kills = Kill.objects.filter(game==self)
+        all_kills = Kill.objects.filter(killer__game=self)
         kills = []
         for kill in all_kills:
             kills.append({
