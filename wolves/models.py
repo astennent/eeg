@@ -80,6 +80,18 @@ class Game(models.Model):
                  players_in_range.append(player.dictify(asker.is_wolf))
         return players_in_range
 
+
+    def get_all_kills(self):
+        all_kills = Kill.objects.filter(killer.game==self)
+        kills = []
+        for kill in all_kills:
+            kills.append({
+                "killer":str(kill.killer.account),
+                "victim":str(kill.victim.account),
+                "time":str(kill.time),
+                })
+        return kills
+
     def is_day(self):
         minutes_passed = (timezone.now() - self.start_time).seconds / 60
         num_cycles = minutes_passed / self.cycle_length
@@ -96,6 +108,7 @@ class Game(models.Model):
 
     def count_living_villagers(self):
         return Player.objects.filter(game=self, is_dead=False, is_wolf=False).count()
+
 
 
 class Player(models.Model):

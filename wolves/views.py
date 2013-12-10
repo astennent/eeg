@@ -262,6 +262,25 @@ def consume_pending_badge(pendingBadge):
     return badge_tag
 
 @csrf_exempt
+def synopsis(request):
+    user = validate_mobile(request)
+    if user == None:
+        return respond("Incorrect Username or Password")
+
+    account = Account.objects.get(user=user)
+
+    try:
+        game = Game.objects.get(id=request.POST['game_id'])
+    except:
+        return respond("Game does not exist")
+
+    all_kills = game.get_all_kills()
+    results = {
+        "all_kills" : all_kills,
+    }
+    return respond(results)
+
+@csrf_exempt
 def place_vote(request):
     user = validate_mobile(request)
     if user == None:
