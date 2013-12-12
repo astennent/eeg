@@ -13,6 +13,7 @@ WAVE_TYPES = (
 )
 
 class DataPoint(models.Model):
-	wave = models.PositiveIntegerField(choices = WAVE_TYPES)
+    wave = models.PositiveIntegerField(choices = WAVE_TYPES)
     user = models.ForeignKey(User, related_name='+')
     time = models.DateTimeField(auto_now_add=True)
+    value = models.PositiveIntegerField()
