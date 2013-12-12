@@ -18,5 +18,6 @@ urlpatterns = patterns('',
     
     # EEG Urls
     url(r'^chart$', 'eeg.views.chart'),
+    url(r'^post_data$', 'eeg.views.post_data'),
 )
 
