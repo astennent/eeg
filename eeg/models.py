@@ -17,3 +17,7 @@ class DataPoint(models.Model):
     user = models.ForeignKey(User, related_name='+')
     time = models.DateTimeField(auto_now_add=True)
     value = models.PositiveIntegerField()
+
+    # Formats the timestamp as a javascript Date object
+    def js_time(self):
+        return self.time.strftime("new Date(%Y, %m, %d, %H, %M, %S)")

@@ -1,16 +1,15 @@
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript">
-google.load('visualization', '1.0', {'packages':['corechart']});
-google.setOnLoadCallback(drawChart);
-function drawChart() {
-	var data = new google.visualization.DataTable();
-	data.addColumn('string', 'Number');
-	data.addColumn('number', 'Number/10');
-	data.addRows( {{ data|safe }} );
+<script type='text/javascript' src='http://www.google.com/jsapi'></script>
+<script type='text/javascript'>
+  google.load('visualization', '1', {'packages':['annotatedtimeline']});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('datetime', 'Date');
+    data.addColumn('number', 'Wave Value');
+    data.addRows( {{ data|safe }} );
+    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+    chart.draw(data, {displayAnnotations: true});  
 
-	var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-	chart.draw(data, {width: 400, height: 240, title: "Numbers"});
 }
 </script>
-
-<div id='chart_div' width=400 height=240></div
+<div id='chart_div' style='width: 1200px; height: 600px;'></div>
