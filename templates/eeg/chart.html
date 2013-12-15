@@ -1,3 +1,5 @@
+<head>
+<link href='http://fonts.googleapis.com/css?family=Alegreya+Sans+SC' rel='stylesheet' type='text/css'>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type='text/javascript' src='http://www.google.com/jsapi'></script>
 <script type='text/javascript'>
@@ -9,36 +11,70 @@
     drawChart(data);
   }
 
+  var chart;
+  var table;
+
   function drawChart(data) {
-    var table = new google.visualization.DataTable();
+    table = new google.visualization.DataTable();
     table.addColumn('datetime', 'Date');
     {{ columnData|safe }}
     table.addRows(data);
-    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-    chart.draw(table, {displayAnnotations: true});  
+    chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+    chart.draw(table, {allowRedraw: true});  
+  }
+
+  function updateChart(data) {
+    if (chart) { //if the chart has been initialized
+      /*for (var row_id in data) {
+        var row = data[row_id];
+        table.addRow(row)
+      }*/
+      table.setRows(data);
+      chart.draw(table, {allowRedraw: true});  
+    }  
   }
 
   function refreshData() {
     //alert("?");
     $.ajax({
-      url: 'ec2-54-235-36-112.compute-1.amazonaws.com/fetch',
+      url: "http://ec2-54-235-36-112.compute-1.amazonaws.com/fetch",
       //data: 'x',
       async: false,
       success: function(data){
         if (data) {
-          alert("yay"+data);
+          //Convert the string returned by the query to an array
+          chartData = eval(data);
+          
+          //render the new data
+          updateChart(chartData)
+            
         }
             
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        alert("Error: " + errorThrown); 
+        alert("Error: " + errorThrown + " " + XMLHttpRequest); 
       }
     });
-    setTimeout(refreshData, 5000);
+    setTimeout(refreshData, 1000); 
   }
 
 
 </script>
-<body onload="refreshData()">
-  <div id='chart_div' style='width: 1200px; height: 600px;'></div>
+
+<style>
+  * {
+    font-family: 'Alegreya Sans SC', sans-serif;
+  }
+</style>
+
+</head>
+<body onload="refreshData()" style='background: #dddddd'>
+  <center>
+  <h1> EEG Data </h1>
+  <table><tr><td>
+  <div id='chart_div' style='width: 1000px; height: 600px;'></div>
+  </td><td>
+  <div id='options_div' style='width:300px; height: 600px; background: #f82;'></div>
+  </td></tr></table>
+  </center>
 </body>

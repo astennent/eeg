@@ -12,6 +12,15 @@ WAVE_TYPES = (
 	(8, 'Theta'),
 )
 
+EMOTIONS = (
+    (1, 'Happy'), 
+    (2, 'Sad'), 
+    (3, 'Angry'), 
+    (4, 'Anxious'), 
+    (5, 'Excited'), 
+    (6, 'Pain'), 
+)
+
 class DataPoint(models.Model):
     wave = models.PositiveIntegerField(choices = WAVE_TYPES)
     user = models.ForeignKey(User, related_name='+')
@@ -21,3 +30,8 @@ class DataPoint(models.Model):
     # Formats the timestamp as a javascript Date object
     def js_time(self):
         return self.time.strftime("new Date(%Y, %m, %d, %H, %M, %S)")
+
+class EmotionPoint(models.Model):
+    emotion = models.PositiveIntegerField(choices=EMOTIONS)
+    user = models.ForeignKey(User, related_name='+')
+    time = models.DateTimeField(auto_now_add=True)

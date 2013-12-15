@@ -1,3 +1,4 @@
+from django.template import Template
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.http import HttpResponse
@@ -55,13 +56,32 @@ def extract_waves(request, user):
             dp = DataPoint(user=user, value=request.POST[name], wave=wave_id+1)
             dp.save()
 
+    emotion = request.POST["EMOTION"]
+    if emotion != "":
+       save_emotion(user, emotion)
+      
+def save_emotion(user, emotion):
+   for current_emotion in EMOTIONS:
+      if current_emotion[1] == emotion:
+         ep = EmotionPoint(user=user, emotion=current_emotion[0])
+         ep.save()
+
 def chart(request):
     # Basic data for testing.	
     # data = [['100',10],['90',9],['80',8]]
 
     columnData = genColumnData()
+    chartData = genChartData()
+    
+    return render_to_response('eeg/chart.html', {
+        'data':chartData,
+        'columnData':columnData,
+      },context_instance=RequestContext(request) )
 
-    data_points = DataPoint.objects.all().order_by('time')
+def genChartData():
+    # TODO: Paramaters from chart page
+    alan = User.objects.get(username='astennent')
+    data_points = DataPoint.objects.filter(user=alan).order_by('time')
     data = []
 
     last_row = None 
@@ -79,11 +99,8 @@ def chart(request):
       last_row = row
 
     cleanData = cleanString(data)
+    return cleanData
 
-    return render_to_response('eeg/chart.html', {
-        'data':cleanData,
-        'columnData':columnData,
-      },context_instance=RequestContext(request) )
 
 def genColumnData():
     output = ""
@@ -91,14 +108,20 @@ def genColumnData():
       output += "table.addColumn('number', '" + wave_tuple[1] + "');\n"
     return output
 
+# Takes a 2d array and converts it to a string without quotes on string values
 def cleanString(data):
-  output = "[\n" 
-  for row in data:
-     output += "["
-     for cell in row:
-        output += str(cell) + ","
-     output += "],\n"
-  output = output + "]"
-  return output
+   output = "[\n" 
+   for row in data:
+      output += "["
+      for cell in row:
+         output += str(cell) + ","
+      output += "],\n"
+   output = output + "]"
+   return output
 
-
+# returns a json {message:"data as string"} response
+def fetch_data(request):
+   chartData = genChartData()
+   return render_to_response('eeg/fetchData.html', {
+        'chartData':chartData,
+      },context_instance=RequestContext(request) )
