@@ -1,15 +1,44 @@
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script type='text/javascript' src='http://www.google.com/jsapi'></script>
 <script type='text/javascript'>
   google.load('visualization', '1', {'packages':['annotatedtimeline']});
-  google.setOnLoadCallback(drawChart);
-  function drawChart() {
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Date');
-    data.addColumn('number', 'Wave Value');
-    data.addRows( {{ data|safe }} );
-    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-    chart.draw(data, {displayAnnotations: true});  
+  google.setOnLoadCallback(drawChartInitial);
 
-}
+  function drawChartInitial() {
+    var data = {{data|safe}};
+    drawChart(data);
+  }
+
+  function drawChart(data) {
+    var table = new google.visualization.DataTable();
+    table.addColumn('datetime', 'Date');
+    {{ columnData|safe }}
+    table.addRows(data);
+    var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
+    chart.draw(table, {displayAnnotations: true});  
+  }
+
+  function refreshData() {
+    //alert("?");
+    $.ajax({
+      url: 'ec2-54-235-36-112.compute-1.amazonaws.com/fetch',
+      //data: 'x',
+      async: false,
+      success: function(data){
+        if (data) {
+          alert("yay"+data);
+        }
+            
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        alert("Error: " + errorThrown); 
+      }
+    });
+    setTimeout(refreshData, 5000);
+  }
+
+
 </script>
-<div id='chart_div' style='width: 1200px; height: 600px;'></div>
+<body onload="refreshData()">
+  <div id='chart_div' style='width: 1200px; height: 600px;'></div>
+</body>
