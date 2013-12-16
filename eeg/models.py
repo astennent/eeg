@@ -24,7 +24,7 @@ EMOTIONS = (
 class DataPoint(models.Model):
     wave = models.PositiveIntegerField(choices = WAVE_TYPES)
     user = models.ForeignKey(User, related_name='+')
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField()
     value = models.PositiveIntegerField()
 
     # Formats the timestamp as a javascript Date object
@@ -34,4 +34,4 @@ class DataPoint(models.Model):
 class EmotionPoint(models.Model):
     emotion = models.PositiveIntegerField(choices=EMOTIONS)
     user = models.ForeignKey(User, related_name='+')
-    time = models.DateTimeField(auto_now_add=True)
+    time = models.DateTimeField()

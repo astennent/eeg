@@ -5,7 +5,11 @@
 <script type='text/javascript'>
   google.load('visualization', '1', {'packages':['annotatedtimeline']});
   google.setOnLoadCallback(drawChartInitial);
-
+  
+  function getE(id){
+    return document.getElementById(id);
+  }
+  
   function drawChartInitial() {
     var data = {{data|safe}};
     drawChart(data);
@@ -20,25 +24,36 @@
     {{ columnData|safe }}
     table.addRows(data);
     chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_div'));
-    chart.draw(table, {allowRedraw: true});  
+      if (getE("check_emotions").checked) {
+        chart.draw(table, {displayAnnotations: true});
+      } else {
+        chart.draw(table, {allowRedraw: true});  
+      }
   }
 
   function updateChart(data) {
     if (chart) { //if the chart has been initialized
-      /*for (var row_id in data) {
-        var row = data[row_id];
-        table.addRow(row)
-      }*/
-      table.setRows(data);
-      chart.draw(table, {allowRedraw: true});  
+      table.addRows(data);
+      if (getE("check_emotions").checked) {
+        drawChart(data);
+      } else {
+        chart.draw(table, {allowRedraw: true});  
+      }
     }  
   }
-
+  
   function refreshData() {
-    //alert("?");
-    $.ajax({
+   var s = getE("user_select");
+   if (s) {
+     var user_id = s.options[s.selectedIndex].value;
+   } else {
+     user_id = 0;
+   }
+
+   $.ajax({
+      type: "POST",
       url: "http://ec2-54-235-36-112.compute-1.amazonaws.com/fetch",
-      //data: 'x',
+      data: {'user_id': user_id},
       async: false,
       success: function(data){
         if (data) {
@@ -47,17 +62,18 @@
           
           //render the new data
           updateChart(chartData)
-            
         }
-            
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) { 
         alert("Error: " + errorThrown + " " + XMLHttpRequest); 
       }
     });
-    setTimeout(refreshData, 1000); 
+    
+    //Refresh the graph periodically if check emotions is false.
+    if (!getE("check_emotions").checked) {
+      setTimeout(refreshData, 1000); 
+    }
   }
-
 
 </script>
 
@@ -74,7 +90,23 @@
   <table><tr><td>
   <div id='chart_div' style='width: 1000px; height: 600px;'></div>
   </td><td>
-  <div id='options_div' style='width:300px; height: 600px; background: #f82;'></div>
+  <div id='options_div' style='width:200px; height: 600px; background: #bbb; padding:10px;'>
+    <center> <h2> Options </h2> </center>
+      <center> <div style='width:80%; background: #ddd; height: 100px; padding:10px;'> 
+      User: 
+      <select id="user_select" onchange="drawChart([]); refreshData()">
+      <option value="0">All</option>
+      {% for user in users %}
+         <option value="{{user.id}}"
+         {% if user.username == "astennent" %} selected {% endif %}
+         >{{user.username}}</option>
+      {% endfor %}
+      </select>
+      <br>
+      <input id="check_emotions" type="checkbox" onchange="refreshData();"/> 
+      Show Emotions <small> (Disables Automatic Updates) </small>
+      </div>
+  </div>
   </td></tr></table>
   </center>
 </body>
